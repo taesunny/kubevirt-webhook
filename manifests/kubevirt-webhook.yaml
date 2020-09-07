@@ -80,7 +80,7 @@ webhooks:
       name: kubevirt-webhook
       namespace: kubevirt-system
       path: "/mutate"
-    caBundle: ${CA_BUNDLE}
+    caBundle: <CA_BUNDLE>
   rules:
   - operations: ["CREATE", "UPDATE"]
     apiGroups: [""]
