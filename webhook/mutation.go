@@ -125,6 +125,8 @@ func mutate(ar *v1beta1.AdmissionReview) *v1beta1.AdmissionResponse {
 	}
 
 	if !mutateRequired(pod) {
+		klog.Info("No need to mutate, Pod name: %s/%s", pod.Name, pod.Namespace)
+
 		return &v1beta1.AdmissionResponse{
 			Allowed: true,
 		}
@@ -246,6 +248,10 @@ func existsToleration(pod corev1.Pod, tolerationKey string) bool {
 }
 
 func mutateRequired(pod corev1.Pod) bool {
+	if !isVirtLauncherPod(pod) {
+		return false
+	}
+
 	if !existsToleration(pod, notReadyTolerationsKey) || !existsToleration(pod, unreachableTolerationsKey) {
 		return true
 	}
@@ -254,7 +260,19 @@ func mutateRequired(pod corev1.Pod) bool {
 }
 
 func isVirtLauncherPod(pod corev1.Pod) bool {
-	if !existsToleration(pod, notReadyTolerationsKey) || !existsToleration(pod, unreachableTolerationsKey) {
+	labels := pod.Labels
+
+	if labels == nil {
+		return false
+	}
+
+	val, exists := labels[virtLauncherLabelKey]
+
+	if !exists {
+		return false
+	}
+
+	if virtLauncherLabelValue == val {
 		return true
 	}
 

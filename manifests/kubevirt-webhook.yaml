@@ -1,32 +1,35 @@
 apiVersion: v1
 kind: Service
 metadata:
- name: kubevirt-webhook
- namespace: kubevirt-system
- labels:
+  name: kubevirt-webhook
+  namespace: kubevirt-system
+  labels:
     app: kubevirt-webhook
 spec:
- ports:
- - name: webhook
+  ports:
+  - name: webhook
     port: 443
     targetPort: 8443
- selector:
+  selector:
     app: kubevirt-webhook
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
- name: kubevirt-webhook
- namespace: kubevirt-system
- labels:
+  name: kubevirt-webhook
+  namespace: kubevirt-system
+  labels:
     app: kubevirt-webhook
 spec:
- replicas: 1
- template:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubevirt-webhook
+  template:
     metadata:
-     name: kubevirt-webhook
-     labels:
-       app: kubevirt-webhook
+      name: kubevirt-webhook
+      labels:
+        app: kubevirt-webhook
     spec:
       tolerations:
         - key: node-role.kubernetes.io/master
@@ -41,9 +44,9 @@ spec:
                 values:
                 - kubevirt-webhook
             topologyKey: kubernetes.io/hostname
-    containers:
+      containers:
       - name: webhook
-        image: kubevirt-webhook:latest # make sure to build and tag the image first!
+        image: kubevirt-webhook:%IMAGE_VERSION% # make sure to build and tag the image first!
         args:
         - -tlsCertFile=/etc/webhook/certs/cert.pem
         - -tlsKeyFile=/etc/webhook/certs/key.pem
@@ -51,10 +54,10 @@ spec:
         - -customUnreachableTolerationSeconds=200
         resources:
           limits:
-            memory: 100Mi
+            memory: 512Mi
             cpu: 500m
           requests:
-            memory: 100Mi
+            memory: 512Mi
             cpu: 500m
         volumeMounts:
           - name: webhook-certs
@@ -62,10 +65,10 @@ spec:
             readOnly: true
         securityContext:
           readOnlyRootFilesystem: true
-     volumes:
-       - name: webhook-certs
-         secret:
-           secretName: kubevirt-webhook-certs
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: kubevirt-webhook-certs
 ---
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
