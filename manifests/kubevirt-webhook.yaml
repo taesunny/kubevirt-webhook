@@ -50,8 +50,8 @@ spec:
         args:
         - -tlsCertFile=/etc/webhook/certs/cert.pem
         - -tlsKeyFile=/etc/webhook/certs/key.pem
-        - -customNotReadyTolerationSeconds=100
-        - -customUnreachableTolerationSeconds=200
+        - -customNotReadyTolerationSeconds=%TARGET_SEC% # example: 200
+        - -customUnreachableTolerationSeconds=%TARGET_SEC% # example: 200
         resources:
           limits:
             memory: 512Mi
