@@ -235,11 +235,13 @@ func getDefaultUnreachableTolerations() corev1.Toleration {
 
 func existsToleration(pod corev1.Pod, tolerationKey string) bool {
 	if pod.Spec.Tolerations == nil {
+		klog.Infof("No tolerations info")
 		return false
 	}
 
 	for _, toleraion := range pod.Spec.Tolerations {
 		if toleraion.Key == tolerationKey {
+			klog.Infof("Toleration %s exists with value %s", tolerationKey, toleraion.Value)
 			return true
 		}
 	}
