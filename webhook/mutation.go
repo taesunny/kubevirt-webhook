@@ -241,7 +241,7 @@ func existsToleration(pod corev1.Pod, tolerationKey string) bool {
 
 	for _, toleraion := range pod.Spec.Tolerations {
 		if toleraion.Key == tolerationKey {
-			klog.Infof("Toleration %s exists with TolerationSeconds %s", tolerationKey, toleraion.TolerationSeconds)
+			klog.Infof("Toleration %s exists with TolerationSeconds %d", tolerationKey, toleraion.TolerationSeconds)
 			return true
 		}
 	}
