@@ -89,6 +89,6 @@ webhooks:
     caBundle: <CA_BUNDLE>
   rules:
   - operations: ["CREATE", "UPDATE"]
-    apiGroups: ["apps"]
+    apiGroups: [""]
     apiVersions: ["v1"]
     resources: ["pods"]
