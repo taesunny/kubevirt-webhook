@@ -125,7 +125,7 @@ func mutate(ar *v1beta1.AdmissionReview) *v1beta1.AdmissionResponse {
 	}
 
 	if !mutateRequired(pod) {
-		klog.Info("No need to mutate, Pod name: %s/%s", pod.Name, pod.Namespace)
+		klog.Infof("No need to mutate, Pod name: %s/%s", pod.Name, pod.Namespace)
 
 		return &v1beta1.AdmissionResponse{
 			Allowed: true,
@@ -248,9 +248,9 @@ func existsToleration(pod corev1.Pod, tolerationKey string) bool {
 }
 
 func mutateRequired(pod corev1.Pod) bool {
-	if !isVirtLauncherPod(pod) {
-		return false
-	}
+	// if !isVirtLauncherPod(pod) {
+	// 	return false
+	// }
 
 	if !existsToleration(pod, notReadyTolerationsKey) || !existsToleration(pod, unreachableTolerationsKey) {
 		return true
@@ -259,6 +259,7 @@ func mutateRequired(pod corev1.Pod) bool {
 	return false
 }
 
+/* changed it to use mutation contoller config
 func isVirtLauncherPod(pod corev1.Pod) bool {
 	labels := pod.Labels
 
@@ -278,3 +279,4 @@ func isVirtLauncherPod(pod corev1.Pod) bool {
 
 	return false
 }
+*/

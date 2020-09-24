@@ -70,10 +70,14 @@ DNS.2 = ${service}.${namespace}
 DNS.3 = ${service}.${namespace}.svc
 EOF
 
+echo "... creating server-key.pem"
 openssl genrsa -out ${tmpdir}/server-key.pem 2048
+
+echo "... creating csr.conf"
 openssl req -new -key ${tmpdir}/server-key.pem -subj "/CN=${service}.${namespace}.svc" -out ${tmpdir}/server.csr -config ${tmpdir}/csr.conf
 
 # clean-up any previously created CSR for our service. Ignore errors if not present.
+echo "... deleting existing csr, if any"
 kubectl delete csr ${csrName} 2>/dev/null || true
 
 # create  server cert/key CSR and  send to k8s API
