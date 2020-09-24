@@ -78,6 +78,9 @@ metadata:
     app: kubevirt-webhook
 webhooks:
 - name: kubevirt-webhook.kubevirt-system.svc
+  objectSelector:
+    matchLabels:
+      "kubevirt.io": "virt-launcher"
   clientConfig:
     service:
       name: kubevirt-webhook
@@ -86,6 +89,6 @@ webhooks:
     caBundle: <CA_BUNDLE>
   rules:
   - operations: ["CREATE", "UPDATE"]
-    apiGroups: [""]
+    apiGroups: ["apps"]
     apiVersions: ["v1"]
     resources: ["pods"]
